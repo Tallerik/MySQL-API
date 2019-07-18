@@ -1,6 +1,39 @@
 # MySQL-API
 Simple Java API for MySQL
 
+## Installation
+
+### Maven
+```XML
+<repositories>  
+ <repository>  
+   <id>jitpack.io</id>  
+   <url>https://jitpack.io</url>  
+ </repository>  
+</repositories>  
+
+<dependencies>
+   <dependency>
+    <groupId>com.github.Tallerik</groupId>
+    <artifactId>MySQL-API</artifactId>
+    <version>0ae2e72c</version>
+   </dependency>
+</dependencies>
+```
+
+### Gradle
+```Gradle
+allprojects {  
+ repositories {  
+  maven { url 'https://jitpack.io' }  
+ }  
+}  
+ 
+dependencies {  
+   implementation 'com.github.Tallerik:MySQL-API:0ae2e72c'  
+}  
+```
+
 ## Usage
 
 ### Init
@@ -31,7 +64,7 @@ boolean: isConnected();
 boolean: isDebug();
 ```
 
-### MySQL Data interaction
+### MySQL Data interaction 
 ```Java
 boolean: sql.tableInsert("myTable", "name, age", "Robert", "32"); // INSERT Statement
 boolean: sql.rowUpdate("myTable", new UpdateValue("age", "45"), "name = 'Robert'"); // UPDATE Statement
