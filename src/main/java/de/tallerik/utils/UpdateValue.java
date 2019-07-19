@@ -1,11 +1,12 @@
-package de.tallerik;
+package de.tallerik.utils;
 
 import java.util.HashMap;
 import java.util.Set;
 
-public class UpdateValue {
 
-    private HashMap<String, String> data = new HashMap<String, String>();
+@SuppressWarnings("Duplicates unused")
+public class UpdateValue {
+    private HashMap<String, String> data = new HashMap<>();
     public UpdateValue(String val1,  String val2) {
         data.put(val1, val2);
     }
