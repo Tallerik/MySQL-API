@@ -277,9 +277,7 @@ public class MySQL {
         } else {
             columns = s.getColumns();
         }
-        lsql = "# noinspection SqlResolveForFile
-
-SELECT " + columns + " FROM " + s.getTable();
+        lsql = "SELECT " + columns + " FROM " + s.getTable();
         if(s.getFilter() != null && !s.getFilter().equals("")) {
             lsql = lsql + " WHERE " + s.getFilter();
         }
