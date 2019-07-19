@@ -3,7 +3,7 @@
 Simple Java API for MySQL
 
 ## Installation
-
+**Notice** Version can be changed. You see the last version in the badge on top of this site  
 ### Maven
 ```XML
 <repositories>  
@@ -17,7 +17,7 @@ Simple Java API for MySQL
    <dependency>
     <groupId>com.github.Tallerik</groupId>
     <artifactId>MySQL-API</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
    </dependency>
 </dependencies>
 ```
@@ -31,7 +31,7 @@ allprojects {
 }  
  
 dependencies {  
-   implementation 'com.github.Tallerik:MySQL-API:2.0.0'  
+   implementation 'com.github.Tallerik:MySQL-API:2.0.1'  
 }  
 ```
 
