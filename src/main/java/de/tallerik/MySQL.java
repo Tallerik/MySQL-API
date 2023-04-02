@@ -16,10 +16,13 @@ public class MySQL {
     private boolean debug = false;
 
     // Inits
-    public MySQL(){}
+    public MySQL() {
+    }
+
     public MySQL(String host) {
         this.host = host;
     }
+
     public MySQL(String host, String user, String pw, String db) {
         this.host = host;
         this.user = user;
@@ -31,31 +34,36 @@ public class MySQL {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
+
     public void setHost(String host) {
         this.host = host;
     }
+
     public void setPort(int port) {
         this.port = port;
     }
+
     public void setUser(String user) {
         this.user = user;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public void setDb(String db) {
         this.db = db;
     }
+
     public boolean isDebug() {
         return debug;
     }
 
     // Connection
     public boolean connect() {
-        try
-        {
+        try {
             MysqlDataSource dataSource = new MysqlDataSource();
-            if( dataSource instanceof DataSource && debug)
+            if (dataSource instanceof DataSource && debug)
                 System.out.println("MysqlDataSource implements the javax.sql.DataSource interface");
 
             dataSource.setServerName(host);
@@ -67,13 +75,12 @@ public class MySQL {
             con = dataSource.getConnection();
             System.out.println("Connection established");
             return true;
-        }
-        catch(SQLException ex)
-        {
+        } catch (SQLException ex) {
             ex.printStackTrace();
             return false;
         }
     }
+
     public boolean isConnected() {
         if (con == null) {
             return false;
@@ -88,6 +95,7 @@ public class MySQL {
         }
         return true;
     }
+
     public boolean close() {
         try {
             con.close();
@@ -98,17 +106,21 @@ public class MySQL {
     }
 
     // Database Interaction
-    public boolean tableInsert(String table, String columns, String... data) {
+    public boolean tableInsert(String table, String columns, Object... data) {
         String sqldata = "";
         int i = 0;
-        for (String d : data) {
-            sqldata = sqldata + "'" + d + "'";
+        for (Object d : data) {
+            if (d instanceof String) {
+                sqldata = sqldata + "'" + d + "'";
+            } else {
+                sqldata = sqldata + d;
+            }
+
             i++;
-            if(i != data.length) {
+            if (i != data.length) {
                 sqldata = sqldata + ", ";
             }
         }
-
 
         String sql = "INSERT INTO " + table + " (" + columns + ") VALUES (" + sqldata + ");";
         Statement stmt = null;
@@ -119,7 +131,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(stmt != null) {
+            if (stmt != null) {
                 try {
                     stmt.close();
                     return true;
@@ -130,15 +142,21 @@ public class MySQL {
         }
         return false;
     }
+
     public boolean tableInsert(Insert... builders) {
         String sql = "";
         for (Insert b : builders) {
             String sqldata = "";
             int i = 0;
-            for (String d : b.getData()) {
-                sqldata = sqldata + "'" + d + "'";
+            for (Object d : b.getData()) {
+                if (d instanceof String) {
+                    sqldata = sqldata + "'" + d + "'";
+                } else {
+                    sqldata = sqldata + d;
+                }
+
                 i++;
-                if(i != b.getData().length) {
+                if (i != b.getData().length) {
                     sqldata = sqldata + ", ";
                 }
             }
@@ -155,7 +173,7 @@ public class MySQL {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if(stmt != null) {
+            if (stmt != null) {
                 try {
                     stmt.close();
                     return true;
@@ -170,10 +188,15 @@ public class MySQL {
     public boolean rowUpdate(String table, UpdateValue value, String filter) {
         String change = "";
         int i = 0;
-        for(String key : value.getKeys()) {
-            change = change + key + " = '" + value.get(key) + "'";
+        for (String key : value.getKeys()) {
+            if (value.get(key) instanceof String) {
+                change = change + key + " = '" + value.get(key) + "'";
+            } else {
+                change = change + key + " = " + value.get(key);
+            }
+
             i++;
-            if(i != value.getKeys().size()) {
+            if (i != value.getKeys().size()) {
                 change = change + ", ";
             }
         }
@@ -196,15 +219,22 @@ public class MySQL {
         }
         return false;
     }
+
     public boolean rowUpdate(Update... builders) {
         String sql = "";
         for (Update u : builders) {
             String change = "";
             int i = 0;
-            for(String key : u.getValue().getKeys()) {
-                change = change + key + " = '" + u.getValue().get(key) + "'";
+            for (String key : u.getValue().getKeys()) {
+                if (u.getValue().get(key) instanceof String) {
+                    change = change + key + " = '" + u.getValue().get(key) + "'";
+                } else {
+                    change = change + key + " = " + u.getValue().get(key);
+                }
+
+
                 i++;
-                if(i != u.getValue().getKeys().size()) {
+                if (i != u.getValue().getKeys().size()) {
                     change = change + ", ";
                 }
             }
@@ -230,11 +260,11 @@ public class MySQL {
     }
 
     public Result rowSelect(String table, String columns, String filter) {
-        if(columns == null || columns.equals("")) {
+        if (columns == null || columns.equals("")) {
             columns = "*";
         }
         String sql = "SELECT " + columns + " FROM " + table;
-        if(filter != null && !filter.equals("")) {
+        if (filter != null && !filter.equals("")) {
             sql = sql + " WHERE " + filter;
         }
         sql = sql + ";";
@@ -246,7 +276,7 @@ public class MySQL {
             res = stmt.executeQuery(sql);
             ResultSetMetaData resmeta = res.getMetaData();
             Result result = new Result();
-            while(res.next()) {
+            while (res.next()) {
                 Row row = new Row();
                 int i = 1;
                 boolean bound = true;
@@ -268,17 +298,23 @@ public class MySQL {
             return new Result();
         }
     }
+
+    public boolean rowExist(Select s) {
+        Result result = rowSelect(s);
+        return result.getRows().size() > 0;
+    }
+
     public Result rowSelect(Select s) {
         String sql = "";
         String columns;
         String lsql;
-        if(s.getColumns() == null || s.getColumns().equals("")) {
+        if (s.getColumns() == null || s.getColumns().equals("")) {
             columns = "*";
         } else {
             columns = s.getColumns();
         }
         lsql = "SELECT " + columns + " FROM " + s.getTable();
-        if(s.getFilter() != null && !s.getFilter().equals("")) {
+        if (s.getFilter() != null && !s.getFilter().equals("")) {
             lsql = lsql + " WHERE " + s.getFilter();
         }
         lsql = lsql + "; ";
@@ -291,7 +327,7 @@ public class MySQL {
             res = stmt.executeQuery(sql);
             ResultSetMetaData resmeta = res.getMetaData();
             Result result = new Result();
-            while(res.next()) {
+            while (res.next()) {
                 Row row = new Row();
                 int i = 1;
                 boolean bound = true;

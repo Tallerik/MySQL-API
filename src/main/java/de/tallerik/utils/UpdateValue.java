@@ -6,7 +6,7 @@ import java.util.Set;
 
 @SuppressWarnings("Duplicates unused")
 public class UpdateValue {
-    private HashMap<String, String> data = new HashMap<>();
+    private HashMap<String, Object> data = new HashMap<>();
     public UpdateValue(String val1,  String val2) {
         data.put(val1, val2);
     }
@@ -16,7 +16,7 @@ public class UpdateValue {
     public Set<String> getKeys() {
         return data.keySet();
     }
-    public String get(String key) {
+    public Object get(String key) {
         return data.get(key);
     }
 

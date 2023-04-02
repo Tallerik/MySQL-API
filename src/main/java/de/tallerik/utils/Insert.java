@@ -7,8 +7,8 @@ import java.util.List;
 public class Insert {
     private String table = "";
     private String columns = "";
-    private String[] data = null;
-    public Insert(String table, String columns, String... data) {
+    private Object[] data = null;
+    public Insert(String table, String columns, Object... data) {
         this.table = table;
         this.columns = columns;
         this.data = data;
@@ -20,8 +20,8 @@ public class Insert {
     public void setData(String... data) {
         this.data = data;
     }
-    public void setData(List<String> data) {
-        this.data = (String[]) data.toArray();
+    public void setData(List<Object> data) {
+        this.data = data.toArray();
     }
     public void setTable(String table) {
         this.table = table;
@@ -32,7 +32,7 @@ public class Insert {
     public String getTable() {
         return table;
     }
-    public String[] getData() {
+    public Object[] getData() {
         return data;
     }
 }
