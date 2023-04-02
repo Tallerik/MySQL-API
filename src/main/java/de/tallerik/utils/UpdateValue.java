@@ -7,10 +7,10 @@ import java.util.Set;
 @SuppressWarnings("Duplicates unused")
 public class UpdateValue {
     private HashMap<String, Object> data = new HashMap<>();
-    public UpdateValue(String val1,  String val2) {
+    public UpdateValue(String val1,  Object val2) {
         data.put(val1, val2);
     }
-    public void add (String val1, String val2) {
+    public void add (String val1, Object val2) {
         data.put(val1, val2);
     }
     public Set<String> getKeys() {
