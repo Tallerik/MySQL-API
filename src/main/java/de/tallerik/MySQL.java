@@ -185,39 +185,41 @@ public class MySQL {
         return false;
     }
 
-    public boolean rowUpdate(String table, UpdateValue value, String filter) {
-        String change = "";
-        int i = 0;
-        for (String key : value.getKeys()) {
-            if (value.get(key) instanceof String) {
-                change = change + key + " = '" + value.get(key) + "'";
-            } else {
-                change = change + key + " = " + value.get(key);
-            }
+    public boolean rowUpdate(String table, String filter, UpdateValue... values) {
+        for (UpdateValue value : values) {
+            String change = "";
+            int i = 0;
+            for (String key : value.getKeys()) {
+                if (value.get(key) instanceof String) {
+                    change = change + key + " = '" + value.get(key) + "'";
+                } else {
+                    change = change + key + " = " + value.get(key);
+                }
 
-            i++;
-            if (i != value.getKeys().size()) {
-                change = change + ", ";
+                i++;
+                if (i != value.getKeys().size()) {
+                    change = change + ", ";
+                }
             }
-        }
-        String sql = "UPDATE " + table + " SET " + change + " WHERE " + filter + ";";
-        Statement stmt = null;
-        try {
-            stmt = con.createStatement();
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                    return true;
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            String sql = "UPDATE " + table + " SET " + change + " WHERE " + filter + ";";
+            Statement stmt = null;
+            try {
+                stmt = con.createStatement();
+                stmt.execute(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
-        return false;
+
+        return true;
     }
 
     public boolean rowUpdate(Update... builders) {
